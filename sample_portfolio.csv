@@ -1,0 +1,4 @@
+Name,Type,Quantity,AvgPrice,CurrentPrice,Source
+TCS,Stock,10,3500.0,4000.0,Zerodha
+HDFC Bank,Stock,20,1400.0,1600.0,Groww
+SBI Nifty 50 ETF,ETF,100,200.0,220.0,Zerodha
