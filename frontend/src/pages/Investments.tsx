@@ -173,7 +173,7 @@ export const Investments: React.FC = () => {
     const activePrefs = prefs || quizPrefs;
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/suitability/recommend", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/suitability/recommend`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

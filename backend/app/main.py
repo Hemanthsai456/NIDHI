@@ -1,4 +1,7 @@
 from contextlib import asynccontextmanager
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.profile import router as profile_router
@@ -7,6 +10,9 @@ from app.api.intelligence import router as intelligence_router
 from app.api.suitability import router as suitability_router
 from app.api.chat import router as chat_router
 from app.db.session import init_db
+
+# Load root .env
+load_dotenv(dotenv_path=Path(__file__).resolve().parents[2] / ".env", override=True)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,10 +28,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS configuration
+# CORS — read allowed frontend origin from env (default: localhost dev servers)
+_frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:5173")
 origins = [
-    "http://localhost:5173",  # Local React dev server
+    _frontend_url,
+    "http://localhost:5173",
+    "http://localhost:5174",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
 ]
 
 app.add_middleware(

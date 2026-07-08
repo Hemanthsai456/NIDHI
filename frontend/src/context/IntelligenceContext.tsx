@@ -54,7 +54,7 @@ export const IntelligenceProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/intelligence/analyze", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/intelligence/analyze`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
