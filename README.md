@@ -379,6 +379,14 @@ These files/folders are gitignored and must be created locally:
 - Monte Carlo simulation for retirement corpus probability modelling
 - Custom report export (PDF) with charts and AI-generated insights
 
+### 🪪 Government ID & KYC Verification
+- **Aadhaar-based eKYC** — OTP verification via UIDAI APIs to instantly confirm investor identity without physical documents
+- **PAN card verification** — validate PAN number against ITD database to meet SEBI KYC requirements before enabling investment features
+- **DigiLocker integration** — let users pull verified documents (Aadhaar, PAN, bank statements) directly from their DigiLocker vault
+- **SEBI KRA linkage** — check existing KYC status from CDSL/NSDL KYC Registration Agencies so already-verified investors skip re-verification
+- **Video KYC (V-KYC)** — live video call with AI-assisted face-match and liveness detection for full remote onboarding compliance
+- Re-KYC reminders and expiry tracking in the Settings page
+
 ---
 
 ## License
