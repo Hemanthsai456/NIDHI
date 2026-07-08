@@ -334,6 +334,53 @@ These files/folders are gitignored and must be created locally:
 
 ---
 
+## 🚀 Future Improvements
+
+### 🔗 Real Broker Integration
+- Replace simulated Zerodha/Groww drawers with live **Kite Connect API** (Zerodha) and **Groww Open API** connections
+- OAuth-based broker authentication for automatic portfolio sync
+- Real-time order placement and execution tracking
+- Automatic holdings sync on every login — no manual CSV imports needed
+
+### 📈 Live Market Data
+- WebSocket integration for **real-time price feeds** (NSE/BSE) via market data providers
+- Live P&L updates that refresh without page reloads
+- Historical NAV data for mutual funds and ETFs to show accurate XIRR returns
+- Price alerts — notify users when a holding crosses a defined target or stop-loss
+
+### 🧠 Advanced AI Capabilities
+- **Multi-model support** — switch between Gemini, GPT-4, and Claude via settings
+- Voice-to-text input for the AI assistant
+- Proactive AI nudges — "Your equity allocation drifted 15% from target, time to rebalance"
+- AI-generated weekly portfolio performance reports delivered to email
+- Goal tracker — visualize progress toward retirement/child education corpus targets
+
+### 🏗️ Production Deployment
+- **Docker + Docker Compose** setup for one-command local/cloud deployment
+- CI/CD pipeline (GitHub Actions) for automated testing and deployment
+- Deploy backend to **Railway / Render** and frontend to **Vercel / Netlify**
+- Rate limiting and API key authentication for the backend
+- Redis caching for intelligence scores and suitability recommendations
+
+### 📱 Mobile App
+- React Native mobile app sharing the same FastAPI backend
+- Biometric login (Face ID / Fingerprint)
+- Push notifications for price alerts, rebalancing reminders, and market events
+- Offline mode with local portfolio cache
+
+### 👥 Social & Community Features
+- Anonymous portfolio benchmarking — compare your risk/return profile against peers by age group
+- Community watchlists and trending asset discussions
+- Financial advisor mode — advisors can view and manage multiple client portfolios
+
+### 📊 Enhanced Analytics
+- **XIRR / CAGR** calculation for each holding and overall portfolio
+- Tax Harvest Dashboard — identify LTCG harvest opportunities before financial year end
+- Monte Carlo simulation for retirement corpus probability modelling
+- Custom report export (PDF) with charts and AI-generated insights
+
+---
+
 ## License
 
 This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
