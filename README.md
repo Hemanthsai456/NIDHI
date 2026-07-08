@@ -200,7 +200,7 @@ Interactive API docs: **http://localhost:8000/docs**
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/nidhi.git
+git clone https://github.com/Hemanthsai456/nidhi.git
 cd nidhi
 ```
 
