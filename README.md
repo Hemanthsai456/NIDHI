@@ -13,6 +13,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Gemini](https://img.shields.io/badge/Gemini-2.0_Flash-4285F4?style=flat-square&logo=google&logoColor=white)](https://aistudio.google.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169e1?style=flat-square&logo=postgresql&logoColor=white)](https://neon.tech)
 [![Firebase](https://img.shields.io/badge/Firebase-Auth-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
@@ -28,7 +29,7 @@ NIDHI resolves two core pain points for retail investors in India:
 1. **Portfolio fragmentation** — holdings scattered across brokers, mutual fund platforms, and bank accounts with no unified view.
 2. **Limited awareness** — most investors are unfamiliar with alternative yield instruments like REITs, InvITs, and Corporate Bonds that could meaningfully improve their risk-return profile.
 
-Rather than acting as another transaction broker, NIDHI serves as a **personal financial copilot** — building a complete picture of an investor's profile, analyzing their existing holdings, and recommending targeted allocations with explainable AI reasoning.
+Rather than acting as another transaction broker, NIDHI serves as a **personal financial copilot** — building a complete picture of an investor's profile, analyzing their existing holdings, and recommending targeted allocations with explainable AI reasoning powered by **Google Gemini 2.0 Flash**.
 
 ---
 
@@ -46,13 +47,13 @@ Rather than acting as another transaction broker, NIDHI serves as a **personal f
 
 ### 🤖 AI Suitability Engine
 - Cross-references investor profile (age, income, goal, risk appetite, horizon) against current holdings
-- Recommends target allocations designed to **fill gaps**, not push generic products
-- Pre-screening questionnaire captures real-time intent before generating suggestions
+- **3-question intent quiz** captures goal, risk appetite, and budget before generating suggestions
+- Recommends target allocations designed to fill gaps, not push generic products
 
 ### 💡 Smart Investment Hub
 | Tab | Description |
 |-----|-------------|
-| **Recommended Allocation** | Personalized suitability targets after a 3-question intent quiz |
+| **Recommended Allocation** | Personalized suitability targets after a quick intent quiz |
 | **Explore All Assets** | Full asset browser with category filters |
 | **High-Yield Trending** | Curated high-distribution picks (InvITs, AAA Bonds, G-Secs) |
 
@@ -63,14 +64,16 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 - **Knowledge Check Quizzes** — 3-question multiple-choice assessments with instant scoring
 - **Deep-link to Copilot** — pre-populated prompts that route learning topics directly to the AI assistant
 
-### 💬 AI Financial Assistant
-- Context-aware chat interface backed by live portfolio and profile data
-- Persistent **conversation history** saved per user (localStorage, keyed by Firebase UID)
+### 💬 AI Financial Assistant (Gemini 2.0 Flash)
+- Powered by **Google Gemini 2.0 Flash** with a rich financial system prompt injecting live portfolio data
+- Gives specific, data-driven answers referencing your actual holdings, P&L, and profile — never generic
+- Full **multi-turn conversation history** passed to Gemini on every message for coherent dialogue
+- Persistent history saved per user (localStorage keyed by Firebase UID) — survives page refreshes
 - Collapsible history sidebar with date-grouped past queries
-- Fallback local reasoning engine when the backend LLM is unavailable
+- Automatic **local fallback engine** when Gemini API is unreachable (covers P&L, risk, rebalancing, tax, SIP planning)
 
 ### ⚙️ Settings & Personalization
-- **Account & Profile** tab — displays investor profile, Firebase account info, and portfolio summary
+- **Account & Profile** tab — displays investor profile details, Firebase account info, and portfolio summary
 - Custom accent color themes (Indigo, Emerald, Rose, Amber)
 - Notification toggles and broker connection management
 - Danger Zone portfolio reset with double-confirmation guard
@@ -96,17 +99,19 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 |-----------|---------|---------|
 | FastAPI | 0.100+ | REST API framework |
 | Python | 3.11 | Runtime |
-| SQLModel | 0.0.14 | ORM (PostgreSQL + SQLite) |
+| SQLModel | 0.0.14 | ORM (PostgreSQL + SQLite fallback) |
 | Pydantic | 2.0 | Request/response validation |
 | Uvicorn | 0.22+ | ASGI server |
 | python-dotenv | 1.0+ | Environment management |
 | psycopg2-binary | 2.9+ | PostgreSQL driver |
+| google-genai | 1.0+ | Gemini 2.0 Flash LLM |
 
 ### Infrastructure
 | Service | Role |
 |--------|------|
-| **Neon PostgreSQL** | Persistent database (user profiles, holdings) |
+| **Neon PostgreSQL** | Persistent database (user profiles & holdings) |
 | **Firebase Auth** | User authentication & session management |
+| **Google Gemini 2.0 Flash** | AI Financial Assistant LLM |
 
 ---
 
@@ -114,14 +119,16 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 
 ```
 NIDHI/
-├── .env.example              # Environment variable template
+├── .env.example              # Environment variable template (copy → .env)
 ├── .gitignore                # Comprehensive ignore rules
+├── .gitattributes            # Line-ending normalization (LF)
+├── README.md
 ├── sample_portfolio.csv      # CSV import template
 │
 ├── backend/
 │   ├── requirements.txt
 │   └── app/
-│       ├── main.py           # FastAPI app + lifespan (init_db)
+│       ├── main.py           # FastAPI app + lifespan (init_db) + CORS
 │       ├── db/
 │       │   └── session.py    # SQLModel engine, get_session, init_db
 │       ├── models/
@@ -129,10 +136,10 @@ NIDHI/
 │       ├── schemas/          # Pydantic request/response schemas
 │       └── api/
 │           ├── profile.py    # GET/POST /api/v1/profile/{user_id}
-│           ├── portfolio.py  # CRUD /api/v1/portfolio/{user_id}
-│           ├── intelligence.py # POST /api/v1/intelligence/analyze
-│           ├── suitability.py  # POST /api/v1/suitability/recommend
-│           └── chat.py       # POST /api/v1/chat/ask
+│           ├── portfolio.py  # CRUD    /api/v1/portfolio/{user_id}
+│           ├── intelligence.py # POST  /api/v1/intelligence/analyze
+│           ├── suitability.py  # POST  /api/v1/suitability/recommend
+│           └── chat.py       # POST   /api/v1/chat/ask  (Gemini 2.0 Flash)
 │
 └── frontend/
     ├── index.html
@@ -140,15 +147,16 @@ NIDHI/
     └── src/
         ├── App.tsx
         ├── context/
-        │   ├── AuthContext.tsx    # Firebase auth + investor profile
-        │   └── PortfolioContext.tsx
+        │   ├── AuthContext.tsx         # Firebase auth + investor profile
+        │   ├── PortfolioContext.tsx    # Holdings CRUD
+        │   └── IntelligenceContext.tsx # Portfolio scoring
         ├── pages/
         │   ├── Auth/             # Login.tsx, Signup.tsx
         │   ├── Dashboard.tsx
         │   ├── Portfolio.tsx
         │   ├── Intelligence.tsx
-        │   ├── Investments.tsx   # Smart Investment Hub
-        │   ├── Assistant.tsx     # AI chat with history
+        │   ├── Investments.tsx   # Smart Investment Hub + intent quiz
+        │   ├── Assistant.tsx     # Gemini AI chat with history
         │   ├── Learning.tsx
         │   ├── Profile.tsx
         │   ├── Onboarding.tsx
@@ -174,19 +182,20 @@ All endpoints are prefixed with `/api/v1`.
 | `DELETE` | `/api/v1/portfolio/{user_id}/{holding_id}` | Remove a holding |
 | `POST` | `/api/v1/intelligence/analyze` | Run portfolio intelligence scoring |
 | `POST` | `/api/v1/suitability/recommend` | Generate AI asset recommendations |
-| `POST` | `/api/v1/chat/ask` | Send message to AI financial assistant |
+| `POST` | `/api/v1/chat/ask` | Send message to Gemini AI assistant |
 
-Interactive API docs available at `http://localhost:8000/docs`.
+Interactive API docs: **http://localhost:8000/docs**
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- A [Firebase](https://console.firebase.google.com) project with **Email/Password** auth enabled
+- Python **3.11+**
+- Node.js **18+**
+- A [Firebase](https://console.firebase.google.com) project with **Email/Password** authentication enabled
 - A [Neon](https://neon.tech) (or any PostgreSQL) database
+- A [Google AI Studio](https://aistudio.google.com/app/apikey) API key for Gemini
 
 ### 1. Clone the Repository
 
@@ -197,36 +206,53 @@ cd nidhi
 
 ### 2. Configure Environment Variables
 
+The project uses **two separate `.env` files** — one for the backend (root) and one for the frontend.
+
+#### Root `.env` — Backend secrets
+
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and fill in your credentials:
+Fill in:
 
 ```env
-# Root .env — read by the backend
-VITE_FIREBASE_API_KEY=...
-VITE_FIREBASE_AUTH_DOMAIN=...
-VITE_FIREBASE_PROJECT_ID=...
-VITE_FIREBASE_STORAGE_BUCKET=...
-VITE_FIREBASE_MESSAGING_SENDER_ID=...
-VITE_FIREBASE_APP_ID=...
 DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
+GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 
-> The frontend also needs its own `.env` inside `frontend/` — copy the same Firebase variables there.
+#### `frontend/.env` — Frontend secrets
+
+```bash
+cp .env.example frontend/.env
+```
+
+Fill in:
+
+```env
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_API_URL=http://localhost:8000
+```
+
+> **`VITE_API_URL`** tells the frontend where the backend is running.
+> For local development use `http://localhost:8000`. For a deployed backend, use its public URL.
 
 ### 3. Backend Setup
 
 ```bash
 cd backend
 
-# Create and activate virtual environment
+# Create virtual environment
 python -m venv venv
 
-# Windows
+# Activate — Windows
 venv\Scripts\activate
-# macOS / Linux
+# Activate — macOS / Linux
 source venv/bin/activate
 
 # Install dependencies
@@ -236,24 +262,22 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-On first startup, **database tables are created automatically** in your PostgreSQL instance via SQLModel's `init_db()` lifespan hook. No migration tool required.
+On first startup, **database tables are created automatically** via SQLModel's `init_db()`. No migration tool required.
+
+The console will confirm Gemini is connected:
+```
+[NIDHI] Gemini AI connected via google.genai SDK (gemini-2.0-flash)
+```
 
 ### 4. Frontend Setup
 
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
-
-# Copy Firebase credentials into frontend env
-# (or create frontend/.env manually with the VITE_FIREBASE_* keys)
-
-# Start the Vite dev server
 npm run dev
 ```
 
-The app is available at **http://localhost:5173**.
+App runs at **http://localhost:5173** (or `:5174` if that port is busy).
 
 ---
 
@@ -274,15 +298,39 @@ Embassy Office Parks REIT,REIT,100,350.00,375.00,Groww
 
 ## Environment Variables Reference
 
-| Variable | Location | Description |
+### Backend (`root .env`)
+
+| Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_FIREBASE_API_KEY` | root `.env` / `frontend/.env` | Firebase Web API key |
-| `VITE_FIREBASE_AUTH_DOMAIN` | root `.env` / `frontend/.env` | Firebase Auth domain |
-| `VITE_FIREBASE_PROJECT_ID` | root `.env` / `frontend/.env` | Firebase project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | root `.env` / `frontend/.env` | Firebase storage bucket |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | root `.env` / `frontend/.env` | Firebase messaging ID |
-| `VITE_FIREBASE_APP_ID` | root `.env` / `frontend/.env` | Firebase app ID |
-| `DATABASE_URL` | root `.env` | PostgreSQL connection string (falls back to SQLite if empty) |
+| `DATABASE_URL` | ✅ | PostgreSQL connection string. Falls back to local SQLite if empty |
+| `GEMINI_API_KEY` | ✅ | Google Gemini API key. Falls back to local rule engine if missing |
+| `FRONTEND_URL` | ⚙️ Production only | Allowed CORS origin for production frontend deployment |
+
+### Frontend (`frontend/.env`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_FIREBASE_API_KEY` | ✅ | Firebase Web API key |
+| `VITE_FIREBASE_AUTH_DOMAIN` | ✅ | Firebase Auth domain |
+| `VITE_FIREBASE_PROJECT_ID` | ✅ | Firebase project ID |
+| `VITE_FIREBASE_STORAGE_BUCKET` | ✅ | Firebase storage bucket |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | ✅ | Firebase messaging sender ID |
+| `VITE_FIREBASE_APP_ID` | ✅ | Firebase app ID |
+| `VITE_API_URL` | ✅ | Backend base URL (e.g. `http://localhost:8000`) |
+
+---
+
+## What's NOT in the Repository
+
+These files/folders are gitignored and must be created locally:
+
+| Path | How to get it |
+|------|--------------|
+| `.env` | `cp .env.example .env` then fill in credentials |
+| `frontend/.env` | `cp .env.example frontend/.env` then fill in credentials |
+| `backend/venv/` | `python -m venv venv && pip install -r requirements.txt` |
+| `frontend/node_modules/` | `npm install` |
+| `frontend/dist/` | `npm run build` (production only) |
 
 ---
 
