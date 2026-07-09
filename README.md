@@ -46,8 +46,9 @@ Rather than acting as another transaction broker, NIDHI serves as a **personal f
 - Generates plain-language advisory commentary flagging hidden risks and rebalancing opportunities
 
 ### 🤖 AI Suitability Engine
-- Cross-references investor profile (age, income, goal, risk appetite, horizon) against current holdings
-- **3-question intent quiz** captures goal, risk appetite, and budget before generating suggestions
+- **Multi-Step Onboarding Flow** — captures investor variables (Age, Occupation, Income, Goals, Horizon, Capacity, Risk Appetite) before unlocking scoring diagnostics
+- Cross-references investor profile details against current holdings to calculate gaps
+- **3-question intent quiz** captures real-time goals, budget, and appetite before generating suggestions
 - Recommends target allocations designed to fill gaps, not push generic products
 
 ### 💡 Smart Investment Hub
@@ -60,6 +61,8 @@ Rather than acting as another transaction broker, NIDHI serves as a **personal f
 Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appends purchases directly into live portfolio holdings.
 
 ### 📚 Interactive Learning Center
+- **📘 Learn About NIDHI Guide** — a comprehensive onboarding manual explaining dashboard widgets, page features, NIDHI scores calculation, AI models, and redirection partners
+- **🔍 Searchable Financial Glossary** — instant filter search covering 22 core financial terms (Asset Allocation, Compounding, etc.) with simple explanations and examples
 - Structured educational modules covering 7 asset classes with characteristics, risks, liquidity profiles, and tax treatment
 - **Knowledge Check Quizzes** — 3-question multiple-choice assessments with instant scoring
 - **Deep-link to Copilot** — pre-populated prompts that route learning topics directly to the AI assistant
@@ -71,6 +74,11 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 - Persistent history saved per user (localStorage keyed by Firebase UID) — survives page refreshes
 - Collapsible history sidebar with date-grouped past queries
 - Automatic **local fallback engine** when Gemini API is unreachable (covers P&L, risk, rebalancing, tax, SIP planning)
+
+### 🔒 Auth & Security Simulation
+- Secure logins and sessions managed via **Firebase Authentication**
+- Safe **blank-by-default login forms** preventing accidental form autofills
+- **Simulated SMS/Email OTP verification** during signup to demonstrate double-factor security checks
 
 ### ⚙️ Settings & Personalization
 - **Account & Profile** tab — displays investor profile details, Firebase account info, and portfolio summary
