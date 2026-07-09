@@ -18,7 +18,14 @@
 [![Firebase](https://img.shields.io/badge/Firebase-Auth-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
-</div>
+## 🚀 Live Deployment
+
+The application is deployed and accessible at the following URLs:
+* **Frontend Web App:** [https://nidhiapp.vercel.app](https://nidhiapp.vercel.app) 
+
+* **Backend API Gateway:** [https://nidhi-api.render.com](https://nidhi-api.onrender.com) 
+
+* **Interactive API Documentation:** [https://nidhi-api.render.com/docs](https://nidhi-api.onrender.com/docs) 
 
 ---
 
