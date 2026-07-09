@@ -181,7 +181,19 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; requiresOnboarding?:
   return <>{children}</>;
 };
 
+import { useEffect } from "react";
+
 const App: React.FC = () => {
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    const theme = stored || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
   return (
     <AuthProvider>
       <PortfolioProvider>

@@ -83,8 +83,11 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 - Mapped readable user-friendly messages for all Firebase authentication errors (invalid credentials, weak passwords, etc.)
 
 ### ⚙️ Settings & Personalization
+- **Linear/Vercel/CRED Inspired Design System** — custom color mappings (pitch black `#050505` dark mode and off-white `#f8f9fa` light mode)
+- **Persistent Theme Toggle** — Sun/Moon switcher in top header (and on login/signup screens) that persists settings in `localStorage`
+- **System Theme Auto-Detection** — matches local OS preferred system settings automatically on first-time visits
+- **Liquid Theme Transitions** — global ease transitions (250ms duration) animating text, background, and border adjustments
 - **Account & Profile** tab — displays investor profile details, Firebase account info, and portfolio summary
-- Custom accent color themes (Indigo, Emerald, Rose, Amber)
 - Notification toggles and broker connection management
 - Danger Zone portfolio reset with double-confirmation guard
 

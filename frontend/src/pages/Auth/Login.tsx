@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Lock, Mail, Loader2, TrendingUp } from "lucide-react";
+import { Lock, Mail, Loader2, TrendingUp, Sun, Moon } from "lucide-react";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +11,21 @@ export const Login: React.FC = () => {
   
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const [theme, setTheme] = useState(() => {
+    return document.documentElement.classList.contains("dark") ? "dark" : "light";
+  });
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("theme", nextTheme);
+    setTheme(nextTheme);
+  };
 
   const mapAuthError = (err: any): string => {
     const code = err?.code || "";
@@ -51,7 +66,18 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col justify-center items-center px-4">
+    <div className="min-h-screen bg-zinc-950 flex flex-col justify-center items-center px-4 relative">
+      {/* Top right theme toggle */}
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={toggleTheme}
+          className="p-2 text-zinc-450 hover:text-zinc-200 rounded-lg hover:bg-zinc-900 transition-colors cursor-pointer border border-transparent hover:border-zinc-800"
+          title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+        </button>
+      </div>
+
       {/* Main card */}
       <div className="w-full max-w-sm bg-zinc-900 border border-zinc-800/80 p-8 rounded-xl shadow-xl">
         

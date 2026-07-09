@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { 
@@ -14,14 +14,36 @@ import {
   X, 
   Bell,
   User,
-  MessageSquare
+  MessageSquare,
+  Sun,
+  Moon
 } from "lucide-react";
+
 
 export const DashboardLayout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem("theme");
+    if (stored) return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "dark" ? "light" : "dark"));
+  };
 
   const navigation = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -122,6 +144,15 @@ export const DashboardLayout: React.FC = () => {
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-3">
+            {/* Theme Toggle Switch */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-zinc-450 hover:text-zinc-200 rounded-lg hover:bg-zinc-900 transition-colors relative cursor-pointer"
+              title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+            </button>
+
             {/* Notification bell placeholder */}
             <button className="p-2 text-zinc-450 hover:text-zinc-200 rounded-lg hover:bg-zinc-900 transition-colors relative cursor-pointer">
               <Bell className="w-4 h-4" />
