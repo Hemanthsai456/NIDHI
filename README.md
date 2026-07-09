@@ -75,10 +75,12 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 - Collapsible history sidebar with date-grouped past queries
 - Automatic **local fallback engine** when Gemini API is unreachable (covers P&L, risk, rebalancing, tax, SIP planning)
 
-### 🔒 Auth & Security Simulation
+### 🔒 Auth & Security
 - Secure logins and sessions managed via **Firebase Authentication**
 - Safe **blank-by-default login forms** preventing accidental form autofills
-- **Simulated SMS/Email OTP verification** during signup to demonstrate double-factor security checks
+- **Firebase Email Verification Flow** — new accounts require validation before accessing the dashboard
+- **Interactive Verification Block Screen** — unverified users are blocked and presented with resend and refresh status options
+- Mapped readable user-friendly messages for all Firebase authentication errors (invalid credentials, weak passwords, etc.)
 
 ### ⚙️ Settings & Personalization
 - **Account & Profile** tab — displays investor profile details, Firebase account info, and portfolio summary

@@ -4,7 +4,8 @@ import {
   createUserWithEmailAndPassword, 
   signOut as firebaseSignOut, 
   onAuthStateChanged,
-  updateProfile
+  updateProfile,
+  sendEmailVerification
 } from "firebase/auth";
 import { auth } from "../services/firebase";
 
@@ -24,6 +25,7 @@ export type AuthUser = {
   uid: string;
   email: string | null;
   displayName: string | null;
+  emailVerified: boolean;
 } | null;
 
 interface AuthContextType {
@@ -36,6 +38,8 @@ interface AuthContextType {
   logout: () => Promise<void>;
   submitOnboarding: (profileData: InvestorProfile) => Promise<void>;
   updateProfileData: (profileData: InvestorProfile) => Promise<void>;
+  resendVerification: () => Promise<void>;
+  reloadUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,14 +57,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,
-          displayName: firebaseUser.displayName
+          displayName: firebaseUser.displayName,
+          emailVerified: firebaseUser.emailVerified
         });
 
-        // Load profile if present in localStorage
-        const storedProfile = localStorage.getItem(`nidhi_profile_${firebaseUser.uid}`);
-        if (storedProfile) {
-          setProfile(JSON.parse(storedProfile));
-          setOnboarded(true);
+        // Load profile if present in localStorage (only if verified)
+        if (firebaseUser.emailVerified) {
+          const storedProfile = localStorage.getItem(`nidhi_profile_${firebaseUser.uid}`);
+          if (storedProfile) {
+            setProfile(JSON.parse(storedProfile));
+            setOnboarded(true);
+          } else {
+            setProfile(null);
+            setOnboarded(false);
+          }
         } else {
           setProfile(null);
           setOnboarded(false);
@@ -83,13 +93,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser({
         uid: fbUser.uid,
         email: fbUser.email,
-        displayName: fbUser.displayName
+        displayName: fbUser.displayName,
+        emailVerified: fbUser.emailVerified
       });
 
-      const storedProfile = localStorage.getItem(`nidhi_profile_${fbUser.uid}`);
-      if (storedProfile) {
-        setProfile(JSON.parse(storedProfile));
-        setOnboarded(true);
+      if (fbUser.emailVerified) {
+        const storedProfile = localStorage.getItem(`nidhi_profile_${fbUser.uid}`);
+        if (storedProfile) {
+          setProfile(JSON.parse(storedProfile));
+          setOnboarded(true);
+        } else {
+          setProfile(null);
+          setOnboarded(false);
+        }
       } else {
         setProfile(null);
         setOnboarded(false);
@@ -104,11 +120,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, { displayName: name });
+      
+      // Immediately call sendEmailVerification after successful account creation
+      await sendEmailVerification(userCredential.user);
+      
       const fbUser = userCredential.user;
       setUser({
         uid: fbUser.uid,
         email: fbUser.email,
-        displayName: name
+        displayName: name,
+        emailVerified: fbUser.emailVerified
       });
       setProfile(null);
       setOnboarded(false);
@@ -126,6 +147,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setOnboarded(false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const resendVerification = async () => {
+    if (auth.currentUser) {
+      await sendEmailVerification(auth.currentUser);
+    } else {
+      throw new Error("No user logged in to verify.");
+    }
+  };
+
+  const reloadUser = async () => {
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      const fbUser = auth.currentUser;
+      setUser({
+        uid: fbUser.uid,
+        email: fbUser.email,
+        displayName: fbUser.displayName,
+        emailVerified: fbUser.emailVerified
+      });
+
+      if (fbUser.emailVerified) {
+        const storedProfile = localStorage.getItem(`nidhi_profile_${fbUser.uid}`);
+        if (storedProfile) {
+          setProfile(JSON.parse(storedProfile));
+          setOnboarded(true);
+        } else {
+          setProfile(null);
+          setOnboarded(false);
+        }
+      }
     }
   };
 
@@ -153,7 +206,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signup, 
         logout, 
         submitOnboarding, 
-        updateProfileData 
+        updateProfileData,
+        resendVerification,
+        reloadUser
       }}
     >
       {children}

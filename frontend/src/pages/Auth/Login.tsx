@@ -12,6 +12,24 @@ export const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const mapAuthError = (err: any): string => {
+    const code = err?.code || "";
+    switch (code) {
+      case "auth/invalid-email":
+      case "auth/user-not-found":
+        return "Invalid email or account does not exist. Please check your input.";
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        return "Incorrect email or password. Please try again.";
+      case "auth/network-request-failed":
+        return "Network connection failed. Please check your internet connection.";
+      case "auth/too-many-requests":
+        return "Account temporarily locked due to too many failed attempts. Please try again later.";
+      default:
+        return err.message || "Failed to log in. Please check your credentials.";
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -26,7 +44,7 @@ export const Login: React.FC = () => {
       navigate("/");
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to log in. Please check your credentials.");
+      setError(mapAuthError(err));
     } finally {
       setLoading(false);
     }
