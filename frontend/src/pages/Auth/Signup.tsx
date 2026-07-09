@@ -11,21 +11,45 @@ export const Signup: React.FC = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   
+  const [otpSent, setOtpSent] = useState(false);
+  const [enteredOtp, setEnteredOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
+  
   const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields");
+    if (!otpSent) {
+      if (!name || !email || !password || !confirmPassword) {
+        setError("Please fill in all fields");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters");
+        return;
+      }
+      
+      // Simulate sending OTP
+      setError("");
+      setLoading(true);
+      setTimeout(() => {
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log("OTP for verification: ", otp);
+        alert(`For demo purposes, your OTP is: ${otp}`); // Just for testing since no real email is sent
+        setGeneratedOtp(otp);
+        setOtpSent(true);
+        setLoading(false);
+      }, 1000);
       return;
     }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+
+    if (enteredOtp !== generatedOtp) {
+      setError("Invalid OTP. Please try again.");
       return;
     }
     
@@ -63,73 +87,95 @@ export const Signup: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
-              Full Name
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
-                className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
-              />
-            </div>
-          </div>
+          {!otpSent ? (
+            <>
+              <div>
+                <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Doe"
+                    className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
+                  />
+                </div>
+              </div>
 
-          <div>
-            <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
-              Email Address
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
-              />
-            </div>
-          </div>
+              <div>
+                <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
+                  />
+                </div>
+              </div>
 
-          <div>
-            <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
-              Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min 6 characters"
-                className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
-              />
-            </div>
-          </div>
+              <div>
+                <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Min 6 characters"
+                    className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
+                  />
+                </div>
+              </div>
 
-          <div>
-            <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
-              Confirm Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <input
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
-              />
+              <div>
+                <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors"
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <div>
+              <label className="block text-[10px] font-medium text-zinc-400 uppercase tracking-wider mb-1.5">
+                Enter OTP sent to {email}
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <input
+                  type="text"
+                  required
+                  value={enteredOtp}
+                  onChange={(e) => setEnteredOtp(e.target.value)}
+                  placeholder="6-digit OTP"
+                  className="w-full bg-zinc-950 border border-zinc-800/80 rounded-lg py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder-zinc-650 focus:outline-none focus:border-zinc-700 transition-colors text-center tracking-widest font-mono"
+                  maxLength={6}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           <button
             type="submit"
@@ -139,10 +185,10 @@ export const Signup: React.FC = () => {
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-zinc-950" />
-                Creating account...
+                {otpSent ? "Verifying..." : "Sending OTP..."}
               </>
             ) : (
-              "Sign Up"
+              otpSent ? "Verify & Create Account" : "Sign Up"
             )}
           </button>
         </form>
