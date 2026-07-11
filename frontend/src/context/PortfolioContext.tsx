@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 export interface Holding {
   id: string;
   name: string;
-  type: "Stock" | "Mutual Fund" | "ETF" | "REIT" | "InvIT" | "Bond" | "Govt Security";
+  type: "Stock" | "Mutual Fund" | "ETF" | "REIT" | "InvIT" | "Bond" | "Govt Security" | "Gold" | "Crypto" | "FD" | "Real Estate";
   quantity: number;
   avgPrice: number;
   currentPrice: number;

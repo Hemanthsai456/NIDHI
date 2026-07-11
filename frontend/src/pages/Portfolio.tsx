@@ -106,7 +106,7 @@ export const Portfolio: React.FC = () => {
         const srcIdx = headers.indexOf("source");
 
         const parsedHoldings: Omit<Holding, "id">[] = [];
-        const validTypes = ["Stock", "Mutual Fund", "ETF", "REIT", "InvIT", "Bond", "Govt Security"];
+        const validTypes = ["Stock", "Mutual Fund", "ETF", "REIT", "InvIT", "Bond", "Govt Security", "Gold", "Crypto", "FD", "Real Estate"];
 
         for (let i = 1; i < lines.length; i++) {
           const columns = lines[i].split(",").map(c => c.trim().replace(/^["']|["']$/g, ""));
@@ -382,6 +382,10 @@ export const Portfolio: React.FC = () => {
                       <option value="InvIT">InvIT</option>
                       <option value="Bond">Bond</option>
                       <option value="Govt Security">Govt Security</option>
+                      <option value="Gold">Gold</option>
+                      <option value="Crypto">Crypto</option>
+                      <option value="FD">FD</option>
+                      <option value="Real Estate">Real Estate</option>
                     </select>
                   </div>
 
@@ -508,7 +512,7 @@ export const Portfolio: React.FC = () => {
                     HDFC Liquid Fund,Mutual Fund,1.254,1000.00,1050.50,Groww
                   </pre>
                   <div className="text-[10px] text-zinc-500 space-y-1">
-                    <p>* **Allowed Asset Types**: Stock, Mutual Fund, ETF, REIT, InvIT, Bond, Govt Security</p>
+                    <p>* **Allowed Asset Types**: Stock, Mutual Fund, ETF, REIT, InvIT, Bond, Govt Security, Gold, Crypto, FD, Real Estate</p>
                     <p>* **Allowed Sources**: Zerodha, Groww, Upstox, Angel One, Manual</p>
                   </div>
                 </div>

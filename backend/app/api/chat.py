@@ -44,10 +44,14 @@ def _build_system_prompt(holdings, profile) -> str:
     debt_pct = round(debt_val / total_val * 100, 1) if total_val > 0 else 0
     reit_pct = round(reit_val / total_val * 100, 1) if total_val > 0 else 0
 
+    total_cost = sum(h.quantity * h.avgPrice for h in holdings)
+    total_pnl = total_val - total_cost
+    pnl_pct = round((total_pnl / total_cost) * 100, 2) if total_cost > 0 else 0
+
     holding_lines = "\n".join(
         f"  - {h.name} ({h.type}): {h.quantity} units @ ₹{h.currentPrice:.2f} "
         f"= ₹{h.quantity * h.currentPrice:,.2f} "
-        f"[Avg cost ₹{h.avgPrice:.2f}, P&L: {'▲' if h.currentPrice >= h.avgPrice else '▼'}"
+        f"[Avg cost ₹{h.avgPrice:.2f}, P&L: {'▲' if h.currentPrice >= h.avgPrice else '▼'} "
         f"₹{abs((h.currentPrice - h.avgPrice) * h.quantity):,.2f}]"
         for h in holdings
     ) if holdings else "  (No holdings imported yet)"
@@ -83,8 +87,10 @@ YOUR EXPERTISE COVERS:
 - SIP strategies, goal-based investing, retirement planning
 - Indian market regulations: SEBI, RBI, AMFI guidelines
 
-LIVE PORTFOLIO DATA:
-  Total Value: ₹{total_val:,.2f}
+LIVE PORTFOLIO DATA (DASHBOARD METRICS):
+  Total Value (Current): ₹{total_val:,.2f}
+  Total Investment Cost: ₹{total_cost:,.2f}
+  Overall Returns (P&L): {'+' if total_pnl >= 0 else '-'}₹{abs(total_pnl):,.2f} ({'+' if pnl_pct >= 0 else ''}{pnl_pct}%)
   Asset Allocation: Equity {eq_pct}% | Fixed Income {debt_pct}% | Alternatives {reit_pct}%
 
 HOLDINGS:
@@ -99,9 +105,10 @@ RESPONSE RULES:
 5. Use markdown: **bold** for key terms, bullet points for lists, and ₹ for all currency.
 6. Keep responses concise but complete — around 150-300 words unless the question requires depth.
 7. Never repeat yourself across turns — the conversation history is provided, build on it.
-8. If a question is completely outside finance/investing, politely redirect: "I'm specialized in investment analysis — let me help you with your portfolio instead."
+8. While your primary focus is investment analysis, you may answer general financial and economic questions. Do not strictly limit yourself to the Smart Investment Hub.
 9. Proactively offer related insights the user didn't ask for but would benefit from (e.g., if asked about risk, also mention the specific rebalancing trade they should make).
-10. Always end with one targeted follow-up question to keep the conversation productive.
+10. You are capable of making informed predictions and forecasts based on market trends. Provide predictive analysis when asked.
+11. Always end with one targeted follow-up question to keep the conversation productive.
 """
 
 
