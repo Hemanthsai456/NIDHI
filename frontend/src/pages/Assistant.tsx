@@ -257,12 +257,84 @@ export const Assistant: React.FC = () => {
     );
   };
 
-  const suggestions = [
-    "Why is my portfolio risky?",
-    "Should I invest in REITs?",
-    "Explain diversification.",
-    "What happens if the market falls?"
-  ];
+  const getDynamicSuggestions = (): string[] => {
+    if (messages.length === 0) {
+      return [
+        "What is compounding?",
+        "How do I start a SIP?",
+        "Explain NIDHI scores.",
+        "What are REITs & InvITs?"
+      ];
+    }
+
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg.role === "user") {
+      return [];
+    }
+
+    const content = lastMsg.content.toLowerCase();
+
+    // Contextual match based on latest assistant response
+    if (content.includes("risk") || content.includes("volatile") || content.includes("appetite")) {
+      return [
+        "How do I reduce my portfolio risk?",
+        "What is NIDHI's Health Score?",
+        "Will I make a profit in the future?"
+      ];
+    }
+    if (content.includes("reit") || content.includes("invit") || content.includes("alternative")) {
+      return [
+        "Which REITs are listed in India?",
+        "What is the tax on REIT payouts?",
+        "What is a safe InvIT to buy?"
+      ];
+    }
+    if (content.includes("tax") || content.includes("ltcg") || content.includes("gains")) {
+      return [
+        "How does tax harvesting work in India?",
+        "What is the current STCG tax rate?",
+        "What are the best tax-saving mutual funds?"
+      ];
+    }
+    if (content.includes("diversif") || content.includes("spread") || content.includes("asset class")) {
+      return [
+        "How should I split my equity investments?",
+        "What are the benefits of Nifty 50 Index ETFs?",
+        "How to balance sector concentration?"
+      ];
+    }
+    if (content.includes("rebalance") || content.includes("shift") || content.includes("sell")) {
+      return [
+        "Suggest specific rebalancing trades.",
+        "How often should I rebalance my portfolio?",
+        "Will rebalancing trigger capital gains tax?"
+      ];
+    }
+    if (content.includes("sip") || content.includes("monthly") || content.includes("compounding")) {
+      return [
+        "Calculate my compounding returns.",
+        "What are the best mutual funds for a SIP?",
+        "How does rupee cost averaging help?"
+      ];
+    }
+
+    // Default choices based on whether portfolio has holdings
+    if (holdings.length === 0) {
+      return [
+        "How do I import my portfolio?",
+        "What is a good starting asset allocation?",
+        "What are the best investments in India?",
+        "What happens if the stock market falls?"
+      ];
+    }
+
+    return [
+      "Analyze my portfolio risk.",
+      "Do I need to rebalance my holdings?",
+      "Suggest tax optimization steps.",
+      "What are the best investments right now?"
+    ];
+  };
 
   const clearChat = () => {
     const welcomeMsg: ChatMessage = {
@@ -289,13 +361,27 @@ export const Assistant: React.FC = () => {
     return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
   };
 
-  // Group messages by date for history view
-  const groupedMessages = messages.reduce((acc, msg) => {
+  const scrollToMessage = (idx: number) => {
+    const el = document.getElementById(`msg-${idx}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Add a quick visual flash to draw attention
+      el.classList.add("bg-zinc-900/60");
+      setTimeout(() => {
+        el.classList.remove("bg-zinc-900/60");
+      }, 800);
+    }
+  };
+
+  // Group messages by date for history view (retaining original index)
+  const messagesWithIndex = messages.map((msg, idx) => ({ ...msg, originalIdx: idx }));
+
+  const groupedMessages = messagesWithIndex.reduce((acc, msg) => {
     const dateLabel = formatDate(msg.timestamp);
     if (!acc[dateLabel]) acc[dateLabel] = [];
     acc[dateLabel].push(msg);
     return acc;
-  }, {} as Record<string, ChatMessage[]>);
+  }, {} as Record<string, (ChatMessage & { originalIdx: number })[]>);
 
   return (
     <div className="flex flex-col h-[calc(100vh-8.5rem)] bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden shadow-xl">
@@ -357,7 +443,7 @@ export const Assistant: React.FC = () => {
                         .map((m, i) => (
                           <button
                             key={i}
-                            onClick={() => handleSend(m.content)}
+                            onClick={() => scrollToMessage(m.originalIdx)}
                             className="w-full text-left p-2 bg-zinc-900/60 hover:bg-zinc-800 border border-zinc-800/60 rounded-lg transition-colors cursor-pointer group"
                           >
                             <p className="text-[10px] text-zinc-400 group-hover:text-zinc-200 truncate leading-relaxed">
@@ -379,7 +465,8 @@ export const Assistant: React.FC = () => {
           {messages.map((m, idx) => (
             <div
               key={idx}
-              className={`flex gap-4 max-w-3xl animate-fade-in ${
+              id={`msg-${idx}`}
+              className={`flex gap-4 max-w-3xl animate-fade-in p-2 rounded-xl transition-all duration-300 ${
                 m.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
               }`}
             >
@@ -437,11 +524,11 @@ export const Assistant: React.FC = () => {
       </div>
 
       {/* Suggested Quick Prompts */}
-      {messages.length <= 1 && !loading && (
+      {!loading && getDynamicSuggestions().length > 0 && (
         <div className="px-6 pb-2 space-y-2">
           <p className="text-[9px] uppercase tracking-wider text-zinc-500 font-semibold">Suggested Prompts</p>
           <div className="flex flex-wrap gap-2">
-            {suggestions.map((s, idx) => (
+            {getDynamicSuggestions().map((s, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(s)}
