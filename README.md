@@ -36,7 +36,7 @@ NIDHI resolves two core pain points for retail investors in India:
 1. **Portfolio fragmentation** — holdings scattered across brokers, mutual fund platforms, and bank accounts with no unified view.
 2. **Limited awareness** — most investors are unfamiliar with alternative yield instruments like REITs, InvITs, and Corporate Bonds that could meaningfully improve their risk-return profile.
 
-Rather than acting as another transaction broker, NIDHI serves as a **personal financial copilot** — building a complete picture of an investor's profile, analyzing their existing holdings, and recommending targeted allocations with explainable AI reasoning powered by **Google Gemini 2.0 Flash**.
+Rather than acting as another transaction broker, NIDHI serves as a **personal financial copilot** — building a complete picture of an investor's profile, analyzing their existing holdings, and recommending targeted allocations with explainable AI reasoning powered by **Google Gemini 2.5 Flash**.
 
 ---
 
@@ -74,7 +74,7 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 - **Knowledge Check Quizzes** — 3-question multiple-choice assessments with instant scoring
 - **Deep-link to Copilot** — pre-populated prompts that route learning topics directly to the AI assistant
 
-### 💬 AI Financial Assistant (Gemini 2.0 Flash)
+### 💬 AI Financial Assistant (Gemini 2.5 Flash)
 - Powered by **Google Gemini 2.0 Flash** with a rich financial system prompt injecting live portfolio data
 - Gives specific, data-driven answers referencing your actual holdings, P&L, and profile — never generic
 - Full **multi-turn conversation history** passed to Gemini on every message for coherent dialogue
@@ -131,7 +131,7 @@ Includes a **Simulated Partner Transaction Drawer** (Zerodha & Groww) that appen
 |--------|------|
 | **Neon PostgreSQL** | Persistent database (user profiles & holdings) |
 | **Firebase Auth** | User authentication & session management |
-| **Google Gemini 2.0 Flash** | AI Financial Assistant LLM |
+| **Google Gemini 2.5 Flash** | AI Financial Assistant LLM |
 
 ---
 
@@ -286,7 +286,7 @@ On first startup, **database tables are created automatically** via SQLModel's `
 
 The console will confirm Gemini is connected:
 ```
-[NIDHI] Gemini AI connected via google.genai SDK (gemini-2.0-flash)
+[NIDHI] Gemini AI connected via google.genai SDK (gemini-2.5-flash)
 ```
 
 ### 4. Frontend Setup
@@ -409,6 +409,24 @@ These files/folders are gitignored and must be created locally:
 
 ---
 
+---
+
+## 🤝 Contributors
+
+We welcome contributions from the community! Whether it's fixing bugs, improving documentation, enhancing the UI, or adding new features, every contribution is appreciated.
+
+### Core Team
+
+| Name | GitHub |
+|------|--------|
+| Hemanth Sai | @Hemanthsai456 |
+| Srujan | @srujangandla |
+| Babji | @bab109 |
+| Chaitanya | @chaithanyakumarreddy57-spec |
+
+---
+
+
 ## License
 
 This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
@@ -417,6 +435,6 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 <div align="center">
 
-Built with ♥ for retail investors in India.
+Built with ❤️ for retail investors in India by Team NIDHI.
 
 </div>
