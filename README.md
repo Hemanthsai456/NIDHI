@@ -409,8 +409,6 @@ These files/folders are gitignored and must be created locally:
 
 ---
 
----
-
 ## 🤝 Contributors
 
 We welcome contributions from the community! Whether it's fixing bugs, improving documentation, enhancing the UI, or adding new features, every contribution is appreciated.
